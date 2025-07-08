@@ -43,9 +43,9 @@ public class ChatController {
         if (!userStore.contains(username)) {
             userStore.addUser(username);
         }
-        // Invia messaggio JOIN a tutti gli altri
+        // Invia messaggio JOIN a tutti
         messagingTemplate.convertAndSend("/topic/messages", message);
-        // Invia lista utenti aggiornata
+        // Invia lista utenti aggiornata a tutti
         messagingTemplate.convertAndSend("/topic/users", userStore.getActiveUsers());
     }
 }
