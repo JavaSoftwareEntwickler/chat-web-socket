@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 @Component
 public class WebSocketEventListener {
     private final SimpMessageSendingOperations messagingTemplate;
-    private static Logger log = Logger.getLogger(WebSocketEventListener.class.getName());
+    private static final Logger log = Logger.getLogger(WebSocketEventListener.class.getName());
     private final ActiveUserStore userStore;
 
     @Autowired
