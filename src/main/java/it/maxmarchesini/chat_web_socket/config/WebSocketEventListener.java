@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 @Component
 public class WebSocketEventListener {
     private final SimpMessageSendingOperations messagingTemplate;
-    Logger log = Logger.getLogger(WebSocketEventListener.class.getName());
+    private static Logger log = Logger.getLogger(WebSocketEventListener.class.getName());
     private final ActiveUserStore userStore;
 
     @Autowired
@@ -40,7 +40,7 @@ public class WebSocketEventListener {
         if (sender != null) {
             userStore.removeUser(sender);
             messagingTemplate.convertAndSend("/topic/users", userStore.getActiveUsers());
-            log.log(Level.INFO,"User Disconnected : {}", sender);
+            log.log(Level.INFO,"Disconnected User: {0}" ,sender);
             var chatMessage = new ChatMessage(sender, "left the chat", MessageType.LEAVE);
             messagingTemplate.convertAndSend("/topic/messages", chatMessage);
         }
