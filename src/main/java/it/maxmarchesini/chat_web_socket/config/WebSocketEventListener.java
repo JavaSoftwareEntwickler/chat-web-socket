@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
@@ -33,11 +35,12 @@ public class WebSocketEventListener {
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         log.info("sessionId: " + headerAccessor.getSessionId());
-        String sender = (String) headerAccessor.getSessionAttributes().get("sender");
+        Map<String, Object> attributes = headerAccessor.getSessionAttributes();
+        String sender = attributes != null ? (String) attributes.get("sender") : null;
         if (sender != null) {
             userStore.removeUser(sender);
             messagingTemplate.convertAndSend("/topic/users", userStore.getActiveUsers());
-            log.info("user disconnected: " + sender);
+            log.log(Level.INFO,"User Disconnected : {}", sender);
             var chatMessage = new ChatMessage(sender, "left the chat", MessageType.LEAVE);
             messagingTemplate.convertAndSend("/topic/messages", chatMessage);
         }
